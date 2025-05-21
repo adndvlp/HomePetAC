@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>En desarrollo - HomePet A.C.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: "Nunito", sans-serif;
+        background-color: #fff9f5;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  </head>
+  <body class="flex items-center justify-center h-screen text-[#6f4831]">
+    <div
+      class="bg-[#feede4] text-center p-8 rounded-2xl shadow-xl max-w-md w-full"
+    >
+      <i class="fas fa-tools text-5xl text-[#c85933] mb-4"></i>
+      <h1 class="text-2xl font-bold mb-2">
+        Esta sección está en desarrollo
+        <span id="seccion" class="text-[#ce9c76]"></span> 🐾
+      </h1>
+      <p class="mb-6">
+        Estamos trabajando para ofrecerte una mejor experiencia. ¡Gracias por tu
+        paciencia!
+      </p>
+      <a
+        href="index.html"
+        class="btn-primary text-white px-6 py-2 rounded-full font-semibold inline-block bg-[#c85933] hover:bg-[#6f4831] transition"
+      >
+        Volver al inicio
+      </a>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const seccion = params.get("from");
+      if (seccion) {
+        const span = document.getElementById("seccion");
+        const textoFormateado = seccion
+          .replace("-", " ")
+          .replace(/\b\w/g, (l) => l.toUpperCase()); // Capitaliza
+        span.textContent = `(${textoFormateado})`;
+      }
+    </script>
+  </body>
+</html>

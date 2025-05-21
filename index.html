@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HomePet A.C. - Cuidado integral para mascotas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap");
+
+      body {
+        font-family: "Nunito", sans-serif;
+        background-color: #fff9f5;
+      }
+
+      .hero-gradient {
+        background: linear-gradient(135deg, #feede4 0%, #f0d7bf 100%);
+      }
+
+      .btn-primary {
+        background-color: #c85933;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        background-color: #6f4831;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background-color: #ce9c76;
+        transition: all 0.3s ease;
+      }
+
+      .btn-secondary:hover {
+        background-color: #c85933;
+        transform: translateY(-2px);
+      }
+
+      .btn-ter {
+        transition: all 0.3s ease;
+      }
+
+      .btn-ter:hover {
+        background-color: #c85933;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .pet-card {
+        transition: all 0.3s ease;
+      }
+
+      .pet-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .testimonial-card {
+        background: linear-gradient(135deg, #f0d7bf 0%, #feede4 100%);
+      }
+
+      .donation-meter {
+        height: 20px;
+        background-color: #f0d7bf;
+      }
+
+      .donation-progress {
+        height: 100%;
+        background-color: #c85933;
+        transition: width 1s ease-in-out;
+      }
+
+      .live-camera {
+        aspect-ratio: 16/9;
+        background-color: #f0d7bf;
+      }
+
+      .nav-item {
+        position: relative;
+      }
+
+      .nav-item::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #c85933;
+        transition: width 0.3s ease;
+      }
+
+      .nav-item:hover::after {
+        width: 100%;
+      }
+
+      .active-nav::after {
+        width: 100%;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .floating {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @media (orientation: landscape) and (max-width: 767px) {
+        .show-on-landscape {
+          display: flex !important;
+        }
+      }
+    </style>
+  </head>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const modalPrototipo = document.getElementById("modalPrototipo");
+      const cerrarPrototipoBtn = document.getElementById("cerrarModalBtn");
+
+      const modalGracias = document.getElementById("modalGracias");
+      const cerrarGraciasBtn = document.getElementById("cerrarGracias");
+
+      const formDonacion = document.getElementById("formDonacion");
+      const formNewsLetter = document.getElementById("formNewsLetter");
+      const boxNewsLetter = document.getElementById("checkboxform");
+
+      // Validación del formulario de donación
+      if (formDonacion) {
+        formDonacion.addEventListener("submit", function (e) {
+          const nombre = formDonacion.querySelector(
+            'input[placeholder="Nombre completo"]'
+          );
+          const correo = formDonacion.querySelector('input[type="email"]');
+
+          if (!nombre.value.trim() || !correo.value.trim()) {
+            e.preventDefault();
+            alert(
+              "Por favor escribe tu nombre y correo electrónico antes de donar."
+            );
+          } else {
+            e.preventDefault(); // Simulación del envío
+            modalGracias.classList.remove("hidden");
+          }
+        });
+      }
+
+      if (formNewsLetter && boxNewsLetter) {
+        formNewsLetter.addEventListener("submit", function (e) {
+          const correo = formNewsLetter.querySelector('input[type="email"]');
+          const checkbox = boxNewsLetter.querySelector(
+            'input[type="checkbox"]'
+          );
+
+          if (!correo.value.trim()) {
+            e.preventDefault();
+            alert("Por favor escribe tu correo electrónico.");
+          } else if (!checkbox.checked) {
+            {
+              e.preventDefault();
+              alert("Tienes que aceptar los términos y condiciones");
+            }
+          } else {
+            e.preventDefault(); // Simulación del envío
+            modalPrototipo.classList.remove("hidden");
+          }
+        });
+      }
+
+      // Mostrar modal de en desarrollo solo en botones no funcionales
+      document.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+          const esSubmit = btn.getAttribute("type") === "submit";
+          const dentroDeForm = btn.closest("form");
+          const esMontoDonacion =
+            btn.classList.contains("bg-[#f0d7bf]") ||
+            btn.innerText.match(/^\$\d+/) ||
+            btn.innerText.match("Otra") ||
+            btn.id.trim("btnDonarAhora") ||
+            btn.id.trim("btn-newsletter") ||
+            btn.id.trim("hamburguer");
+
+          // No hacer nada si es botón de envío real o de selección de monto
+          if (esSubmit || dentroDeForm || esMontoDonacion) return;
+
+          e.preventDefault();
+          modalPrototipo.classList.remove("hidden");
+        });
+      });
+
+      // Cerrar modales
+      cerrarPrototipoBtn?.addEventListener("click", () =>
+        modalPrototipo.classList.add("hidden")
+      );
+      cerrarGraciasBtn?.addEventListener("click", () =>
+        modalGracias.classList.add("hidden")
+      );
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const mascotasFelices = ["img/perro1.jpeg", "img/perro2.avif"];
+
+      const gatos = ["img/gato1.jpeg", "img/gato2.avif"];
+
+      const conejos = ["img/conejo1.avif", "img/conejo2.avif"];
+
+      function randomFrom(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
+      document.getElementById("imgMascotaFeliz").src =
+        randomFrom(mascotasFelices);
+      document.getElementById("imgGato").src = randomFrom(gatos);
+      document.getElementById("imgConejo").src = randomFrom(conejos);
+    });
+  </script>
+
+  <body class="text-[#6f4831]">
+    <!-- Header/Navigation -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+      <div
+        class="container mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-paw text-3xl text-[#c85933]"></i>
+          <h1 class="text-2xl font-bold">
+            HomePet<span class="text-[#ce9c76]">A.C.</span>
+          </h1>
+        </div>
+
+        <nav class="hidden md:flex space-x-8">
+          <a href="en-desarrollo.html?from=servicios" class="nav-item py-2 px-1"
+            >Servicios</a
+          >
+          <a
+            href="en-desarrollo.html?from=adopciones"
+            class="nav-item py-2 px-1"
+            >Adopciones</a
+          >
+          <a
+            href="en-desarrollo.html?from=donaciones"
+            class="nav-item py-2 px-1"
+            >Donaciones</a
+          >
+          <a href="en-desarrollo.html?from=historias" class="nav-item py-2 px-1"
+            >Historias</a
+          >
+          <a href="en-desarrollo.html?from=en-vivo" class="nav-item py-2 px-1"
+            >En Vivo</a
+          >
+        </nav>
+
+        <div class="flex items-center space-x-4">
+          <button id="hamburguer" class="md:hidden text-2xl">
+            <i class="fas fa-bars"></i>
+          </button>
+          <button
+            class="hidden md:block btn-primary text-white px-6 py-2 rounded-full font-semibold"
+          >
+            Mi Cuenta
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile menu -->
+      <div class="md:hidden bg-white py-4 px-4 hidden">
+        <a href="en-desarrollo.html?from=servicios" class="block py-2"
+          >Servicios</a
+        >
+        <a href="en-desarrollo.html?from=adopciones" class="block py-2"
+          >Adopciones</a
+        >
+        <a href="en-desarrollo.html?from=donaciones" class="block py-2"
+          >Donaciones</a
+        >
+        <a href="en-desarrollo.html?from=historias" class="block py-2"
+          >Historias</a
+        >
+        <a href="en-desarrollo.html?from=en-vivo" class="block py-2">En Vivo</a>
+        <button
+          class="btn-primary text-white px-6 py-2 rounded-full font-semibold mt-2"
+        >
+          Mi Cuenta
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative h-auto py-16 md:py-24 overflow-hidden">
+      <!-- Video dinámico para mobile -->
+      <video
+        id="videoMobileHero"
+        autoplay
+        muted
+        loop
+        playsinline
+        class="absolute top-0 left-0 w-full h-full object-cover z-0 md:hidden"
+      ></video>
+      <!-- Video dinámico para desktop -->
+      <video
+        id="desktopVideoHero"
+        autoplay
+        muted
+        loop
+        playsinline
+        class="absolute top-0 left-0 w-full h-full object-cover z-0 hidden md:block"
+      ></video>
+
+      <div class="absolute inset-0 bg-black opacity-40 z-0"></div>
+
+      <div
+        class="relative z-10 container mx-auto px-4 flex flex-col md:flex-row items-center text-white"
+      >
+        <div class="md:w-1/2 mb-10 md:mb-0">
+          <h2 class="text-4xl md:text-5xl font-bold mb-4">
+            Cuidado con <span class="text-[#f5b293]">amor</span> para tu mascota
+          </h2>
+          <p class="text-xl mb-8">
+            Hotel, spa, adopciones y atención a domicilio. Parte de nuestros
+            ingresos apoyan el rescate de animales en situación de calle.
+          </p>
+          <div
+            class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4"
+          >
+            <button
+              class="btn-primary text-white px-8 py-3 rounded-full font-semibold"
+            >
+              Reservar ahora
+            </button>
+            <button
+              class="btn-secondary text-white px-8 py-3 rounded-full font-semibold"
+            >
+              Ver adopciones
+            </button>
+          </div>
+        </div>
+
+        <!-- Imágenes solo en desktop y mobile acostado -->
+        <div
+          class="w-full md:w-1/2 flex justify-center hidden md:flex show-on-landscape"
+        >
+          <div class="relative w-full max-w-md mx-auto">
+            <img
+              id="imgMascotaFeliz"
+              alt="Mascota feliz"
+              class="rounded-full border-8 border-[#f0d7bf] w-full object-cover"
+            />
+            <img
+              id="imgGato"
+              alt="Gato"
+              class="absolute -bottom-6 -left-6 rounded-full border-4 border-white w-20 h-20 object-cover floating"
+            />
+            <img
+              id="imgConejo"
+              alt="Conejo"
+              class="absolute -top-6 -right-6 rounded-full border-4 border-white w-16 h-16 object-cover floating"
+              style="animation-delay: 0.5s"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">
+          Nuestros <span class="text-[#c85933]">Servicios</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Hotel -->
+          <div class="pet-card bg-[#feede4] rounded-2xl p-6 text-center">
+            <div
+              class="bg-[#f0d7bf] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-hotel text-3xl text-[#6f4831]"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Hotel para mascotas</h3>
+            <p class="mb-4">
+              Alojamiento seguro y cómodo con atención personalizada las 24
+              horas.
+            </p>
+            <button
+              class="btn-secondary text-white px-6 py-2 rounded-full text-sm font-semibold"
+            >
+              Reservar
+            </button>
+          </div>
+
+          <!-- Spa -->
+          <div class="pet-card bg-[#feede4] rounded-2xl p-6 text-center">
+            <div
+              class="bg-[#f0d7bf] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-spa text-3xl text-[#6f4831]"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Spa y belleza</h3>
+            <p class="mb-4">
+              Baños terapéuticos, cortes de pelo, manicura y tratamientos
+              relajantes.
+            </p>
+            <button
+              class="btn-secondary text-white px-6 py-2 rounded-full text-sm font-semibold"
+            >
+              Reservar
+            </button>
+          </div>
+
+          <!-- Home Care -->
+          <div class="pet-card bg-[#feede4] rounded-2xl p-6 text-center">
+            <div
+              class="bg-[#f0d7bf] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-home text-3xl text-[#6f4831]"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Cuidado a domicilio</h3>
+            <p class="mb-4">
+              Visitas de cuidado, paseos y atención en tu hogar cuando no puedas
+              estar.
+            </p>
+            <button
+              class="btn-secondary text-white px-6 py-2 rounded-full text-sm font-semibold"
+            >
+              Reservar
+            </button>
+          </div>
+
+          <!-- Vet -->
+          <div class="pet-card bg-[#feede4] rounded-2xl p-6 text-center">
+            <div
+              class="bg-[#f0d7bf] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-clinic-medical text-3xl text-[#6f4831]"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Atención veterinaria</h3>
+            <p class="mb-4">
+              Chequeos, vacunas, emergencias y seguimiento médico especializado.
+            </p>
+            <button
+              class="btn-secondary text-white px-6 py-2 rounded-full text-sm font-semibold"
+            >
+              Reservar
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Adoptions Section -->
+    <section id="adoptions" class="py-16 bg-[#fff9f5]">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-4">
+          Mascotas en busca de un <span class="text-[#c85933]">hogar</span>
+        </h2>
+        <p class="text-center max-w-2xl mx-auto mb-12">
+          Conoce a nuestros rescatados listos para ser adoptados. Cada adopción
+          ayuda a rescatar a otro animal necesitado.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Pet 1 -->
+          <div class="pet-card bg-white rounded-2xl overflow-hidden shadow-lg">
+            <div class="relative">
+              <img
+                src="img/max.avif"
+                alt="Max"
+                class="w-full h-64 object-cover"
+              />
+              <div
+                class="absolute top-4 right-4 bg-[#c85933] text-white px-3 py-1 rounded-full text-sm font-semibold"
+              >
+                <i class="fas fa-dog mr-1"></i> Perro
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold mb-1">Max</h3>
+              <div class="flex items-center text-sm mb-3">
+                <i class="fas fa-venus-mars text-[#ce9c76] mr-2"></i>
+                <span class="mr-4">Macho</span>
+                <i class="fas fa-birthday-cake text-[#ce9c76] mr-2"></i>
+                <span>2 años</span>
+              </div>
+              <p class="mb-4">
+                Max es un perro juguetón y cariñoso que fue rescatado de la
+                calle. Le encanta correr y jugar con pelotas.
+              </p>
+              <div class="flex justify-between items-center">
+                <button
+                  class="btn-primary text-white px-6 py-2 rounded-full text-sm font-semibold"
+                >
+                  Adoptar
+                </button>
+                <button class="text-[#c85933] font-semibold flex items-center">
+                  Ver más <i class="fas fa-chevron-right ml-1"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pet 2 -->
+          <div class="pet-card bg-white rounded-2xl overflow-hidden shadow-lg">
+            <div class="relative">
+              <img
+                src="img/luna.avif"
+                alt="Luna"
+                class="w-full h-64 object-cover"
+              />
+              <div
+                class="absolute top-4 right-4 bg-[#c85933] text-white px-3 py-1 rounded-full text-sm font-semibold"
+              >
+                <i class="fas fa-cat mr-1"></i> Gato
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold mb-1">Luna</h3>
+              <div class="flex items-center text-sm mb-3">
+                <i class="fas fa-venus text-[#ce9c76] mr-2"></i>
+                <span class="mr-4">Hembra</span>
+                <i class="fas fa-birthday-cake text-[#ce9c76] mr-2"></i>
+                <span>1 año</span>
+              </div>
+              <p class="mb-4">
+                Luna es una gata tranquila que disfruta de acurrucarse en
+                lugares cálidos. Fue rescatada de un refugio superpoblado.
+              </p>
+              <div class="flex justify-between items-center">
+                <button
+                  class="btn-primary text-white px-6 py-2 rounded-full text-sm font-semibold"
+                >
+                  Adoptar
+                </button>
+                <button class="text-[#c85933] font-semibold flex items-center">
+                  Ver más <i class="fas fa-chevron-right ml-1"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pet 3 -->
+          <div class="pet-card bg-white rounded-2xl overflow-hidden shadow-lg">
+            <div class="relative">
+              <img
+                src="img/conejo3.avif"
+                alt="Bunny"
+                class="w-full h-64 object-cover"
+              />
+              <div
+                class="absolute top-4 right-4 bg-[#c85933] text-white px-3 py-1 rounded-full text-sm font-semibold"
+              >
+                <i class="fas fa-paw mr-1"></i> Conejo
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold mb-1">Bunny</h3>
+              <div class="flex items-center text-sm mb-3">
+                <i class="fas fa-mars text-[#ce9c76] mr-2"></i>
+                <span class="mr-4">Macho</span>
+                <i class="fas fa-birthday-cake text-[#ce9c76] mr-2"></i>
+                <span>6 meses</span>
+              </div>
+              <p class="mb-4">
+                Bunny es un conejo enérgico y curioso. Le encanta mordisquear
+                zanahorias y correr por espacios abiertos.
+              </p>
+              <div class="flex justify-between items-center">
+                <button
+                  class="btn-primary text-white px-6 py-2 rounded-full text-sm font-semibold"
+                >
+                  Adoptar
+                </button>
+                <button class="text-[#c85933] font-semibold flex items-center">
+                  Ver más <i class="fas fa-chevron-right ml-1"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-12">
+          <button
+            class="btn-secondary text-white px-8 py-3 rounded-full font-semibold"
+          >
+            Ver todas las mascotas
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Donations Section -->
+    <section id="donations" class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-4">
+          Apoya nuestra <span class="text-[#c85933]">causa</span>
+        </h2>
+        <p class="text-center max-w-2xl mx-auto mb-12">
+          Tus donaciones ayudan a rescatar, rehabilitar y encontrar hogares para
+          animales en situación de calle. Puedes seguir el destino de tus
+          fondos.
+        </p>
+
+        <div class="max-w-4xl mx-auto bg-[#feede4] rounded-2xl p-8 md:p-12">
+          <div class="flex flex-col md:flex-row">
+            <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+              <h3 class="text-2xl font-bold mb-4">Impacto de tu donación</h3>
+              <div class="mb-6">
+                <div class="flex justify-between mb-1">
+                  <span>Rescates este mes</span>
+                  <span>12/25</span>
+                </div>
+                <div class="donation-meter rounded-full overflow-hidden">
+                  <div class="donation-progress" style="width: 48%"></div>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div class="flex items-start">
+                  <div class="bg-[#c85933] text-white p-2 rounded-full mr-3">
+                    <i class="fas fa-utensils text-sm"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold">Alimentación</h4>
+                    <p class="text-sm">
+                      $100 alimenta a un animal por 1 semana
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <div class="bg-[#c85933] text-white p-2 rounded-full mr-3">
+                    <i class="fas fa-syringe text-sm"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold">Atención médica</h4>
+                    <p class="text-sm">$500 cubre vacunas y desparasitación</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <div class="bg-[#c85933] text-white p-2 rounded-full mr-3">
+                    <i class="fas fa-home text-sm"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold">Refugio</h4>
+                    <p class="text-sm">
+                      $1000 ayuda a mantener nuestro albergue
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="md:w-1/2">
+              <h3 class="text-2xl font-bold mb-4">Haz tu donación</h3>
+              <form id="formDonacion">
+                <div class="mb-4">
+                  <label class="block mb-2 font-semibold">Cantidad</label>
+                  <div class="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      class="bg-[#f0d7bf] py-2 rounded-lg font-semibold"
+                    >
+                      $100
+                    </button>
+                    <button
+                      type="button"
+                      class="bg-[#f0d7bf] py-2 rounded-lg font-semibold"
+                    >
+                      $200
+                    </button>
+                    <button
+                      type="button"
+                      class="bg-[#f0d7bf] py-2 rounded-lg font-semibold"
+                    >
+                      $500
+                    </button>
+                    <button
+                      type="button"
+                      class="bg-[#f0d7bf] py-2 rounded-lg font-semibold"
+                    >
+                      $1000
+                    </button>
+                    <button
+                      type="button"
+                      class="bg-[#f0d7bf] py-2 rounded-lg font-semibold"
+                    >
+                      $2000
+                    </button>
+                    <button
+                      type="button"
+                      class="bg-[#f0d7bf] py-2 rounded-lg font-semibold"
+                    >
+                      Otra
+                    </button>
+                  </div>
+                </div>
+
+                <div class="mb-4">
+                  <label class="block mb-2 font-semibold"
+                    >Destino preferido</label
+                  >
+                  <select
+                    class="w-full p-3 rounded-lg border border-[#f0d7bf] bg-white"
+                  >
+                    <option>Cualquier necesidad</option>
+                    <option>Alimentación</option>
+                    <option>Atención médica</option>
+                    <option>Refugio</option>
+                    <option>Programas de adopción</option>
+                  </select>
+                </div>
+
+                <div class="mb-6">
+                  <label class="block mb-2 font-semibold"
+                    >Datos personales</label
+                  >
+                  <input
+                    type="text"
+                    placeholder="Nombre completo"
+                    class="w-full p-3 rounded-lg border border-[#f0d7bf] mb-2"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Correo electrónico"
+                    class="w-full p-3 rounded-lg border border-[#f0d7bf]"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn-primary text-white w-full py-3 rounded-lg font-semibold"
+                  id="btnDonarAhora"
+                >
+                  Donar ahora
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-12">
+          <button
+            class="btn-ter border-2 border-[#c85933] text-[#c85933] px-8 py-3 rounded-full font-semibold"
+          >
+            Seguir mis donaciones
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section id="stories" class="py-16 bg-[#fff9f5]">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-4">
+          Historias de <span class="text-[#c85933]">éxito</span>
+        </h2>
+        <p class="text-center max-w-2xl mx-auto mb-12">
+          Conoce las historias reales de mascotas que encontraron un hogar
+          amoroso gracias a HomePet.
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Story 1 -->
+          <div class="testimonial-card rounded-2xl overflow-hidden shadow-lg">
+            <div class="relative">
+              <img
+                src="img/rex.avif"
+                alt="Rex y su familia"
+                class="w-full h-64 object-cover"
+              />
+              <div
+                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6"
+              >
+                <h3 class="text-xl font-bold text-white">
+                  Rex encontró su hogar
+                </h3>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <img
+                  src="https://placehold.co/60x60/feede4/6f4831?text=M"
+                  alt="Familia Martínez"
+                  class="rounded-full mr-4"
+                />
+                <div>
+                  <h4 class="font-bold">Familia Martínez</h4>
+                  <p class="text-sm text-[#ce9c76]">Adoptaron a Rex en 2022</p>
+                </div>
+              </div>
+              <p class="mb-4">
+                "Rex llegó a nuestras vidas cuando más lo necesitábamos. Después
+                de perder a nuestro perro anterior, no estábamos seguros de
+                estar listos, pero HomePet nos ayudó en todo el proceso. Hoy no
+                podemos imaginar nuestra familia sin él."
+              </p>
+              <div class="flex space-x-2">
+                <div class="bg-[#f0d7bf] px-3 py-1 rounded-full text-sm">
+                  Perro
+                </div>
+                <div class="bg-[#f0d7bf] px-3 py-1 rounded-full text-sm">
+                  Rescate
+                </div>
+                <div class="bg-[#f0d7bf] px-3 py-1 rounded-full text-sm">
+                  Felicidad
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Story 2 -->
+          <div class="testimonial-card rounded-2xl overflow-hidden shadow-lg">
+            <div class="relative">
+              <img
+                src="img/mishi.avif"
+                alt="Mishi y Laura"
+                class="w-full h-64 object-cover"
+              />
+              <div
+                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6"
+              >
+                <h3 class="text-xl font-bold text-white">
+                  Mishi cambió mi vida
+                </h3>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <img
+                  src="https://placehold.co/60x60/feede4/6f4831?text=LC"
+                  alt="Laura Cortés"
+                  class="rounded-full mr-4"
+                />
+                <div>
+                  <h4 class="font-bold">Laura Cortés</h4>
+                  <p class="text-sm text-[#ce9c76]">Adoptó a Mishi en 2023</p>
+                </div>
+              </div>
+              <p class="mb-4">
+                "Siempre me consideré 'más de perros', hasta que conocí a Mishi
+                en un evento de adopción de HomePet. Su mirada me conquistó. El
+                equipo me guió en cómo cuidar a un gato por primera vez. Ahora
+                Mishi es mi compañera inseparable y hasta ha ayudado a reducir
+                mi ansiedad."
+              </p>
+              <div class="flex space-x-2">
+                <div class="bg-[#f0d7bf] px-3 py-1 rounded-full text-sm">
+                  Gato
+                </div>
+                <div class="bg-[#f0d7bf] px-3 py-1 rounded-full text-sm">
+                  Primera vez
+                </div>
+                <div class="bg-[#f0d7bf] px-3 py-1 rounded-full text-sm">
+                  Terapia
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-12">
+          <button
+            class="btn-secondary text-white px-8 py-3 rounded-full font-semibold"
+          >
+            Ver más historias
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Cameras -->
+    <section id="live" class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-4">
+          Mira a nuestras mascotas <span class="text-[#c85933]">en vivo</span>
+        </h2>
+        <p class="text-center max-w-2xl mx-auto mb-12">
+          Observa a los animales en nuestro hotel o a los rescatados disponibles
+          para adopción en tiempo real.
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <div>
+            <div
+              class="live-camera rounded-2xl overflow-hidden mb-4 flex items-center justify-center"
+            >
+              <img src="img/petropolis.jpg" />
+            </div>
+
+            <h3 class="text-xl font-bold">Área de juegos - Hotel</h3>
+            <p>
+              Observa a las mascotas jugando en nuestro espacio de recreación.
+            </p>
+          </div>
+
+          <div>
+            <div
+              class="live-camera rounded-2xl overflow-hidden mb-4 flex items-center justify-center"
+            >
+              <img src="img/refugio.jpg" />
+            </div>
+            <h3 class="text-xl font-bold">Refugio de adopción</h3>
+            <p>Conoce a los animales rescatados que buscan un hogar.</p>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button
+            class="btn-primary text-white px-8 py-3 rounded-full font-semibold"
+          >
+            Ver todas las cámaras
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pet Tracking Demo -->
+    <section class="py-16 bg-[#feede4]">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row items-center">
+          <div class="lg:w-1/2 mb-10 lg:mb-0 lg:pr-12">
+            <h2 class="text-3xl font-bold mb-4">
+              Sigue el bienestar de tu mascota
+              <span class="text-[#c85933]">en todo momento</span>
+            </h2>
+            <p class="mb-6">
+              Nuestro panel de seguimiento te permite monitorear la salud,
+              ubicación y actividades de tu mascota adoptada a través de
+              HomePet.
+            </p>
+
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="bg-[#c85933] text-white p-2 rounded-full mr-3">
+                  <i class="fas fa-heartbeat"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Historial médico completo</h4>
+                  <p>Vacunas, tratamientos y recordatorios de citas.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="bg-[#c85933] text-white p-2 rounded-full mr-3">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Ubicación en tiempo real</h4>
+                  <p>Con nuestro collar GPS opcional (servicio adicional).</p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="bg-[#c85933] text-white p-2 rounded-full mr-3">
+                  <i class="fas fa-bell"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Recordatorios personalizados</h4>
+                  <p>Para alimentación, medicamentos y actividades.</p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              class="btn-primary text-white px-8 py-3 rounded-full font-semibold mt-8"
+            >
+              Acceder a mi panel
+            </button>
+          </div>
+
+          <div class="lg:w-1/2 bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-4 bg-[#f0d7bf] flex items-center">
+              <div class="flex space-x-2 mr-4">
+                <div class="w-3 h-3 rounded-full bg-[#c85933]"></div>
+                <div class="w-3 h-3 rounded-full bg-[#ce9c76]"></div>
+                <div class="w-3 h-3 rounded-full bg-[#f0d7bf]"></div>
+              </div>
+              <div class="text-sm font-semibold">
+                Panel de seguimiento - Max
+              </div>
+            </div>
+
+            <div class="p-6">
+              <div class="flex items-center mb-6">
+                <img
+                  src="https://placehold.co/80x80/f0d7bf/6f4831?text=Max"
+                  alt="Max"
+                  class="rounded-full mr-4"
+                />
+                <div>
+                  <h3 class="text-xl font-bold">Max</h3>
+                  <p class="text-sm text-[#ce9c76]">Adoptado el 15/03/2025</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-[#fff9f5] p-3 rounded-lg text-center">
+                  <div class="text-sm mb-1">Peso</div>
+                  <div class="font-bold">12.5 kg</div>
+                </div>
+                <div class="bg-[#fff9f5] p-3 rounded-lg text-center">
+                  <div class="text-sm mb-1">Edad</div>
+                  <div class="font-bold">2 años</div>
+                </div>
+                <div class="bg-[#fff9f5] p-3 rounded-lg text-center">
+                  <div class="text-sm mb-1">Estado</div>
+                  <div class="font-bold text-green-600">Saludable</div>
+                </div>
+              </div>
+
+              <div class="mb-6">
+                <h4 class="font-bold mb-2">Próximas actividades</h4>
+                <div class="space-y-2">
+                  <div class="flex items-center bg-[#fff9f5] p-3 rounded-lg">
+                    <div class="bg-[#ce9c76] text-white p-2 rounded-full mr-3">
+                      <i class="fas fa-syringe text-sm"></i>
+                    </div>
+                    <div>
+                      <div class="font-semibold">Vacuna antirrábica</div>
+                      <div class="text-sm">
+                        11/06/2025 - Veterinario HomePet
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center bg-[#fff9f5] p-3 rounded-lg">
+                    <div class="bg-[#ce9c76] text-white p-2 rounded-full mr-3">
+                      <i class="fas fa-bone text-sm"></i>
+                    </div>
+                    <div>
+                      <div class="font-semibold">Control de peso</div>
+                      <div class="text-sm">Diario - 7:00 AM y 7:00 PM</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="font-bold mb-2">Ubicación reciente</h4>
+                <div
+                  class="bg-[#fff9f5] rounded-lg p-4 flex items-center justify-center h-32"
+                >
+                  <i class="fas fa-map-marked-alt text-3xl text-[#ce9c76]"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="relative py-16 overflow-hidden text-white">
+      <!-- Video para mobile -->
+      <video
+        id="videoMobileMision"
+        autoplay
+        muted
+        loop
+        playsinline
+        class="absolute top-0 left-0 w-full h-full object-cover z-0 md:hidden"
+      ></video>
+      <!-- Video para desktop -->
+      <video
+        id="desktopVideoMission"
+        autoplay
+        muted
+        loop
+        playsinline
+        class="absolute top-0 left-0 w-full h-full object-cover z-0 hidden md:block"
+      ></video>
+
+      <!-- Capa oscura -->
+      <div class="absolute inset-0 bg-black opacity-40 z-0"></div>
+
+      <!-- Contenido -->
+      <div class="relative z-10 container mx-auto px-4 text-center">
+        <i class="fas fa-paw text-5xl mb-6 text-[#f0d7bf]"></i>
+        <h2 class="text-3xl font-bold mb-4">Nuestra Misión</h2>
+        <p class="max-w-3xl mx-auto text-xl mb-8">
+          En HomePet tratamos cada mascota con amor, respeto y dignidad.
+          Mientras brindamos un ambiente sin estrés para tu compañero,
+          destinamos parte de nuestros ingresos a la protección de animales en
+          situación de calle, generando un impacto social y ambiental positivo.
+        </p>
+
+        <div
+          class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-12"
+        >
+          <div class="bg-[#c85933]/90 p-6 rounded-2xl">
+            <div
+              class="bg-white text-[#6f4831] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-heart text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Amor</h3>
+            <p>Cada animal merece cariño y atención personalizada.</p>
+          </div>
+
+          <div class="bg-[#c85933]/90 p-6 rounded-2xl">
+            <div
+              class="bg-white text-[#6f4831] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-hand-holding-heart text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Compromiso Social</h3>
+            <p>Trabajamos para mejorar la vida de animales vulnerables.</p>
+          </div>
+
+          <div class="bg-[#c85933]/90 p-6 rounded-2xl">
+            <div
+              class="bg-white text-[#6f4831] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-leaf text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Responsabilidad Ambiental</h3>
+            <p>Promovemos prácticas sostenibles en el cuidado animal.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-16 bg-[#f0d7bf]">
+      <div class="container mx-auto px-4">
+        <div
+          class="max-w-4xl mx-auto bg-white rounded-2xl p-8 md:p-12 shadow-lg"
+        >
+          <div class="flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+              <h3 class="text-2xl font-bold mb-2">¡Mantente actualizado!</h3>
+              <p class="mb-4">
+                Suscríbete a nuestro newsletter para recibir noticias, consejos
+                de cuidado animal y promociones especiales.
+              </p>
+              <div class="flex space-x-2">
+                <div class="bg-[#feede4] p-3 rounded-full">
+                  <i class="fab fa-instagram text-[#c85933]"></i>
+                </div>
+                <div class="bg-[#feede4] p-3 rounded-full">
+                  <i class="fab fa-facebook-f text-[#c85933]"></i>
+                </div>
+                <div class="bg-[#feede4] p-3 rounded-full">
+                  <i class="fab fa-twitter text-[#c85933]"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="md:w-1/2">
+              <form id="formNewsLetter" class="flex">
+                <input
+                  type="email"
+                  placeholder="Tu correo electrónico"
+                  class="flex-grow p-3 rounded-l-lg border border-[#f0d7bf]"
+                />
+                <button
+                  id="btn-newsletter"
+                  type="submit"
+                  class="btn-primary text-white px-6 py-3 rounded-r-lg font-semibold"
+                >
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </form>
+              <div id="checkboxform" class="flex items-center mt-4">
+                <input type="checkbox" id="terms" class="mr-2" />
+                <label for="terms" class="text-sm"
+                  >Acepto recibir comunicaciones y confirmo que he leído la
+                  Política de Privacidad.</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal de desarrollo -->
+    <div
+      id="modalPrototipo"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-[#feede4] text-[#6f4831] max-w-md w-full rounded-2xl p-8 shadow-2xl text-center relative"
+      >
+        <i class="fas fa-tools text-4xl text-[#c85933] mb-4"></i>
+        <h3 class="text-2xl font-bold mb-2">¡En desarrollo!</h3>
+        <p class="mb-6">
+          Esta funcionalidad aún no está disponible en el prototipo de HomePet
+          A.C. 🐾
+        </p>
+        <button
+          id="cerrarModalBtn"
+          class="btn-primary text-white px-6 py-2 rounded-full font-semibold"
+        >
+          Entendido
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal de agradecimiento -->
+    <div
+      id="modalGracias"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-[#feede4] text-[#6f4831] max-w-md w-full rounded-2xl p-8 shadow-2xl text-center"
+      >
+        <i class="fas fa-heart text-4xl text-[#c85933] mb-4"></i>
+        <h3 class="text-2xl font-bold mb-2">¡Gracias por tu donación!</h3>
+        <p class="mb-6">Tu apoyo ayuda a cambiar vidas. 🐶🐱</p>
+        <button
+          id="cerrarGracias"
+          class="btn-primary text-white px-6 py-2 rounded-full font-semibold"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[#6f4831] text-white pt-12 pb-6">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div>
+            <div class="flex items-center space-x-2 mb-4">
+              <i class="fas fa-paw text-3xl text-[#f0d7bf]"></i>
+              <h3 class="text-2xl font-bold">
+                HomePet<span class="text-[#f0d7bf]">A.C.</span>
+              </h3>
+            </div>
+            <p class="mb-4">
+              Organización sin fines de lucro dedicada al cuidado integral de
+              mascotas y rescate animal.
+            </p>
+            <p class="text-sm text-[#f0d7bf]">Registro civil: 275617584</p>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-bold mb-4 border-b border-[#ce9c76] pb-2">
+              Servicios
+            </h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="hover:text-[#f0d7bf]">Hotel para mascotas</a>
+              </li>
+              <li>
+                <a href="#" class="hover:text-[#f0d7bf]">Spa y belleza</a>
+              </li>
+              <li>
+                <a href="#" class="hover:text-[#f0d7bf]"
+                  >Atención a domicilio</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-[#f0d7bf]"
+                  >Servicios veterinarios</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-[#f0d7bf]"
+                  >Programas de adopción</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-bold mb-4 border-b border-[#ce9c76] pb-2">
+              Contacto
+            </h4>
+            <ul class="space-y-2">
+              <li class="flex items-center">
+                <i class="fas fa-map-marker-alt mr-2 text-[#f0d7bf]"></i>
+                <span>Av. Cuauhtémoc 1024, Ciudad de México</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-phone-alt mr-2 text-[#f0d7bf]"></i>
+                <span>+52 55 3424 6409</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-envelope mr-2 text-[#f0d7bf]"></i>
+                <span>hola@homepet.org</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-clock mr-2 text-[#f0d7bf]"></i>
+                <span>Lunes a Domingo: 8:00 - 20:00</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-bold mb-4 border-b border-[#ce9c76] pb-2">
+              Legal
+            </h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="hover:text-[#f0d7bf]"
+                  >Términos y condiciones</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-[#f0d7bf]"
+                  >Política de privacidad</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-[#f0d7bf]">Transparencia</a>
+              </li>
+              <li>
+                <a href="#" class="hover:text-[#f0d7bf]">Reportes anuales</a>
+              </li>
+              <li>
+                <a href="#" class="hover:text-[#f0d7bf]"
+                  >Donaciones verificables</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-[#ce9c76] text-center text-sm">
+          <p>
+            © 2025 HomePet A.C. - Todos los derechos reservados. Organización
+            sin fines de lucro.
+          </p>
+          <p class="mt-2 text-[#f0d7bf]">
+            Hecho con <i class="fas fa-heart"></i> por amantes de los animales
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile menu toggle
+      document.querySelector(".fa-bars").addEventListener("click", function () {
+        const mobileMenu = document.querySelector(
+          ".md\\:hidden.bg-white.py-4.px-4"
+        );
+        mobileMenu.classList.toggle("hidden");
+      });
+
+      // Donation amount buttons
+      const donationButtons = document.querySelectorAll(
+        ".bg-\\[\\#f0d7bf\\].py-2.rounded-lg"
+      );
+      donationButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          // Remove active class from all buttons
+          donationButtons.forEach((btn) => {
+            btn.classList.remove("bg-[#c85933]", "text-white");
+            btn.classList.add("bg-[#f0d7bf]");
+          });
+
+          // Add active class to clicked button
+          this.classList.remove("bg-[#f0d7bf]");
+          this.classList.add("bg-[#c85933]", "text-white");
+        });
+      });
+
+      // Smooth scrolling for navigation
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          // Update active nav item
+          document.querySelectorAll(".nav-item").forEach((item) => {
+            item.classList.remove("active-nav");
+          });
+          this.classList.add("active-nav");
+
+          // Scroll to section
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+            });
+          }
+
+          // Close mobile menu if open
+          const mobileMenu = document.querySelector(
+            ".md\\:hidden.bg-white.py-4.px-4"
+          );
+          if (!mobileMenu.classList.contains("hidden")) {
+            mobileMenu.classList.add("hidden");
+          }
+        });
+      });
+
+      const desktopVideos = [
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801494/perro1_c9qfkt.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801499/perro2_xmxuhf.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801510/perro3_jgliw2.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801482/perro4_stugsv.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801501/gato1_s3bffr.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801492/gato2_rcvpgr.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801501/gato3_c8mnot.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801490/gato4_wki7vg.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801492/conejo1_i9hfma.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801513/conejo2_exjmsi.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801465/conejo3_mb4dzk.mp4",
+        "https://res.cloudinary.com/dksfewgts/video/upload/v1747801511/conejo4_k79m4l.mp4",
+      ];
+
+      const randomDesktop =
+        desktopVideos[Math.floor(Math.random() * desktopVideos.length)];
+      const randomDesktop2 =
+        desktopVideos[Math.floor(Math.random() * desktopVideos.length)];
+
+      const desktopVideoHero = document.getElementById("desktopVideoHero");
+      const desktopVideoMission = document.getElementById(
+        "desktopVideoMission"
+      );
+      const mobileVideoHero = document.getElementById("videoMobileHero");
+      const mobileVideoMission = document.getElementById("videoMobileMision");
+
+      if (desktopVideoHero) {
+        desktopVideoHero.innerHTML = `<source src="${randomDesktop}" type="video/mp4" />`;
+      }
+      if (desktopVideoMission) {
+        desktopVideoMission.innerHTML = `<source src="${randomDesktop2}" type="video/mp4" />`;
+      }
+
+      if (mobileVideoHero) {
+        mobileVideoHero.innerHTML = `<source src="${randomDesktop}" type="video/mp4" />`;
+      }
+      if (mobileVideoMission) {
+        mobileVideoMission.innerHTML = `<source src="${randomDesktop2}" type="video/mp4" />`;
+      }
+
+      // Animation for donation progress bar
+      window.addEventListener("load", function () {
+        const progressBar = document.querySelector(".donation-progress");
+        if (progressBar) {
+          // Set width based on actual progress (48% in this case)
+          progressBar.style.width = "48%";
+        }
+      });
+    </script>
+  </body>
+</html>
